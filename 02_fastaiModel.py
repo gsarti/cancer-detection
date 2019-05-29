@@ -69,62 +69,68 @@ sz = CROP_SIZE
 MODEL_PATH = str(arch).split()[1]   
 
 
-# create dataframe for the fastai loader
-train_dict = {'name': train_path + train_names, 'label': train_labels}
-df = pd.DataFrame(data=train_dict)
-# create test dataframe
-test_names = []
-for f in os.listdir(test_path):
-    test_names.append(test_path + f)
-df_test = pd.DataFrame(np.asarray(test_names), columns=['name'])
-
-type(df)
-df.shape
-
-type(df_test)
-df_test.shape
-
-
-# Subclass ImageList to use our own image opening function
-class MyImageItemList(ImageList):
-    def open(self, fn:PathOrStr)->Image:
-        print(fn)
-        print(fn.replace('\\', ''))
-        # img = readCroppedImage(fn.replace('/./','').replace('//','/'))
-        img = readCroppedImage(fn.replace('\\', ''))
-        # This ndarray image has to be converted to tensor before passing on as fastai Image,
-        # we can use pil2tensor
-        return vision.Image(px=pil2tensor(img, np.float32))
+# =============================================================================
+# # create dataframe for the fastai loader
+# train_dict = {'name': train_path + train_names, 'label': train_labels}
+# df = pd.DataFrame(data=train_dict)
+# # create test dataframe
+# test_names = []
+# for f in os.listdir(test_path):
+#     test_names.append(test_path + f)
+# df_test = pd.DataFrame(np.asarray(test_names), columns=['name'])
+# 
+# type(df)
+# df.shape
+# 
+# type(df_test)
+# df_test.shape
+# =============================================================================
 
 
-class MyImageItemList(ImageItemList): 
-     def open(self, fn:PathOrStr)->Image:
-        img = readCroppedImage(fn.replace('./',''))
-        return vision.Image(px=pil2tensor(img, np.float32))
 
-
-# Create ImageDataBunch using fastai data block API
-imgDataBunch = (MyImageItemList.from_df(path='/', df=df, suffix='.tif')
-        #Where to find the data?
-        .split_by_idx(val_idx)
-        #How to split in train/valid?
-        .label_from_df(cols='label')
-        #Where are the labels?
-        .add_test(MyImageItemList.from_df(path='/', df=df_test))
-        # .add_test(MyImageItemList.from_df(path='', df=df_test))
-        #dataframe pointing to the test set?
-        .transform(tfms=[[],[]], size=sz)
-        # We have our custom transformations implemented in the image loader but we could apply transformations also here
-        # Even though we don't apply transformations here, we set two empty lists to tfms. Train and Validation augmentations
-        .databunch(bs=BATCH_SIZE)
-        # convert to databunch
-        .normalize([tensor([0.702447, 0.546243, 0.696453]), tensor([0.238893, 0.282094, 0.216251])])
-        # Normalize with training set stats. These are means and std's of each three channel and we calculated these previously in the stats step.
-       )
-
-# check that the imgDataBunch is loading our images ok
-imgDataBunch.show_batch(rows=2, figsize=(4,4))
-
+# =============================================================================
+# # Subclass ImageList to use our own image opening function
+# class MyImageItemList(ImageList):
+#     def open(self, fn:PathOrStr)->Image:
+#         print(fn)
+#         print(fn.replace('\\', ''))
+#         # img = readCroppedImage(fn.replace('/./','').replace('//','/'))
+#         img = readCroppedImage(fn.replace('\\', ''))
+#         # This ndarray image has to be converted to tensor before passing on as fastai Image,
+#         # we can use pil2tensor
+#         return vision.Image(px=pil2tensor(img, np.float32))
+# 
+# 
+# class MyImageItemList(ImageItemList): 
+#      def open(self, fn:PathOrStr)->Image:
+#         img = readCroppedImage(fn.replace('./',''))
+#         return vision.Image(px=pil2tensor(img, np.float32))
+# 
+# 
+# # Create ImageDataBunch using fastai data block API
+# imgDataBunch = (MyImageItemList.from_df(path='/', df=df, suffix='.tif')
+#         #Where to find the data?
+#         .split_by_idx(val_idx)
+#         #How to split in train/valid?
+#         .label_from_df(cols='label')
+#         #Where are the labels?
+#         .add_test(MyImageItemList.from_df(path='/', df=df_test))
+#         # .add_test(MyImageItemList.from_df(path='', df=df_test))
+#         #dataframe pointing to the test set?
+#         .transform(tfms=[[],[]], size=sz)
+#         # We have our custom transformations implemented in the image loader but we could apply transformations also here
+#         # Even though we don't apply transformations here, we set two empty lists to tfms. Train and Validation augmentations
+#         .databunch(bs=BATCH_SIZE)
+#         # convert to databunch
+#         .normalize([tensor([0.702447, 0.546243, 0.696453]), tensor([0.238893, 0.282094, 0.216251])])
+#         # Normalize with training set stats. These are means and std's of each three channel and we calculated these previously in the stats step.
+#        )
+# 
+# 
+# # check that the imgDataBunch is loading our images ok
+# imgDataBunch.show_batch(rows=2, figsize=(4,4))
+# 
+# =============================================================================
 
 # Preso da un commento
 # Subclass ImageItemList to use our own image opening function
@@ -139,14 +145,16 @@ imgDataBunch.show_batch(rows=2, figsize=(4,4))
 #         return vision.Image(px=pil2tensor(img, np.float32))
 # =============================================================================
 
-class MyImageItemList(ImageList):
-    def open(self, fn:PathOrStr)->Image:
-        print(fn)
-        tempst=fn.replace('/./','').replace('//','/')
-        img = readCroppedImage(tempst.split('\\')[1])
-        # This ndarray image has to be converted to tensor before passing on as fastai Image,
-        # we can use pil2tensor
-        return vision.Image(px=pil2tensor(img, np.float32))
+# =============================================================================
+# class MyImageItemList(ImageList):
+#     def open(self, fn:PathOrStr)->Image:
+#         print(fn)
+#         tempst=fn.replace('/./','').replace('//','/')
+#         img = readCroppedImage(tempst.split('\\')[1])
+#         # This ndarray image has to be converted to tensor before passing on as fastai Image,
+#         # we can use pil2tensor
+#         return vision.Image(px=pil2tensor(img, np.float32))
+# =============================================================================
 
 
 
@@ -181,7 +189,7 @@ val_idx[:5]
     
 class MyImageItemList(ImageList): 
      def open(self, fn:PathOrStr)->Image:
-         print(fn)
+         # print(fn)
          img = readCroppedImage(fn.replace('./',''))
          return vision.Image(px=pil2tensor(img, np.float32))  
     
@@ -192,7 +200,9 @@ imgDataBunch = (
     .label_from_df(cols='label')
     .add_test(MyImageItemList.from_df(path=test_path, df=df_test, suffix='.tif'))  
     .transform(tfms=[[],[]], size=sz)
-    .databunch(bs=BATCH_SIZE) 
+    # num_workers = 0 not to make Windows crash
+    # .databunch(bs=BATCH_SIZE) 
+    .databunch(bs=BATCH_SIZE, num_workers=0)
     .normalize([tensor([0.79583625, 0.61863765, 0.78903647]),tensor([0.27073981, 0.31955782, 0.24504378])])
 )   
     
@@ -207,6 +217,8 @@ imgDataBunch = (
 # df_test = pd.DataFrame(np.asarray(test_names), columns=['name']); df_test.head()
 # =============================================================================
     
+
+
 
 
 imgDataBunch.show_batch(rows=2, figsize=(4,4))
