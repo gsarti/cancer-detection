@@ -47,3 +47,6 @@ vignettes/*.pdf
 /*_files/
 
 # End of https://www.gitignore.io/api/r
+
+# Directory with data
+directoryNotToBeUploaded
