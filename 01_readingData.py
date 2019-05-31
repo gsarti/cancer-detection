@@ -22,6 +22,8 @@ from sklearn.utils import shuffle
 from tqdm import tqdm_notebook
 import math
 
+from sklearn.model_selection import train_test_split
+
 
 data = pd.read_csv('histopathologic-cancer-detection/train_labels.csv')
 
@@ -232,9 +234,16 @@ for i, idx in enumerate(shuffled_data[shuffled_data['label'] == 0]['id'][:1]):
     path = os.path.join(train_path, idx)
     ax[0].imshow(readImage(path + '.tif'))
     ax[0].set_title('Original image')
+    box = patches.Rectangle((32,32),32,32,linewidth=4,edgecolor='b',
+                            facecolor='none', linestyle=':', capstyle='round')
+    ax[0].add_patch(box)
     for j in range(1,5):
         ax[j].imshow(readCroppedImage(path + '.tif'))
         ax[j].set_title('Cropped image')
+        box = patches.Rectangle((32-(ORIGINAL_SIZE - CROP_SIZE)/2,32-(ORIGINAL_SIZE - CROP_SIZE)/2),
+                                32,32,linewidth=4,edgecolor='b',
+                            facecolor='none', linestyle=':', capstyle='round')
+        ax[j].add_patch(box)
 
 
 

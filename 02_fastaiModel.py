@@ -60,7 +60,7 @@ from fastai.vision import *
 from torchvision.models import *    # import *=all the models from torchvision  
 
 # specify model architecture, densenet169 seems to perform well for this data but you could experiment
-arch = densenet169                  
+arch = densenet169
 # specify batch size, hardware restrics this one. Large batch sizes may run out of GPU memory
 BATCH_SIZE = 128                    
 # input size is the crop size
