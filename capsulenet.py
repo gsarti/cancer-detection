@@ -166,7 +166,7 @@ def test(model, data, args):
 def manipulate_latent(model, data, args):
     print('-'*30 + 'Begin: manipulate' + '-'*30)
     x_test, y_test = data
-    index = np.argmax(y_test, 1) == args.class
+    index = np.argmax(y_test, 1) == args.cancer
     number = np.random.randint(low=0, high=sum(index) - 1)
     x, y = x_test[index][number], y_test[index][number]
     x, y = np.expand_dims(x, 0), np.expand_dims(y, 0)
@@ -183,8 +183,8 @@ def manipulate_latent(model, data, args):
 
     img = combine_images(x_recons, height=16)
     image = img*255
-    Image.fromarray(image.astype(np.uint8)).save(args.save_dir + '/manipulate-%d.png' % args.class)
-    print('manipulated result saved to %s/manipulate-%d.png' % (args.save_dir, args.class))
+    Image.fromarray(image.astype(np.uint8)).save(args.save_dir + '/manipulate-%d.png' % args.cancer)
+    print('manipulated result saved to %s/manipulate-%d.png' % (args.save_dir, args.cancer))
     print('-' * 30 + 'End: manipulate' + '-' * 30)
 
 
@@ -194,7 +194,7 @@ def load_cancer():
         x_test = f["x_test"]
     x_train = x_train.reshape(-1, 96, 96, 3).astype('float32') / 255.
     x_test = x_test.reshape(-1, 96, 96, 3).astype('float32') / 255.
-    y_test = np.array([])
+    y_test = np.zeros(x_test.shape[0]).astype('float32')
     return (x_train, y_train), (x_test, y_test)
 
 
@@ -223,7 +223,7 @@ if __name__ == "__main__":
     parser.add_argument('--save_dir', default='./result')
     parser.add_argument('-t', '--testing', action='store_true',
                         help="Test the trained model on testing dataset")
-    parser.add_argument('--class', default=5, type=int,
+    parser.add_argument('--cancer', default=1, type=int,
                         help="Class to manipulate")
     parser.add_argument('-w', '--weights', default=None,
                         help="The path of the saved weights. Should be specified when testing")
