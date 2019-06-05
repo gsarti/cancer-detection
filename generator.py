@@ -36,13 +36,11 @@ class DataGenerator(Sequence):
         'Generate one batch of data'
         # Generate indexes of the batch
         indexes = self.indexes[index * self.batch_size:(index + 1) * self.batch_size]
-
         # Find list of IDs
         list_IDs_temp = [self.list_IDs[k] for k in indexes]
-
         # Generate data
         X, y = self.__data_generation(list_IDs_temp)
-
+        print((X.shape, y.shape))
         return X, y
 
     def on_epoch_end(self):
@@ -61,8 +59,7 @@ class DataGenerator(Sequence):
         # Generate data
         for i, ID in enumerate(list_IDs_temp):
             # Store sample
-            X[i, ] = np.array(Image.open(train_dir + ID + '.tif')
-
+            X[i, ] = np.array(Image.open(self.dir + ID + '.tif'))
             # Store class
             y[i] = self.labels[ID]
 

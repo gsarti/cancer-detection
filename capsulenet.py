@@ -17,10 +17,10 @@ Author: Xifeng Guo, E-mail: `guoxifeng1990@163.com`, Github: `https://github.com
 """
 
 import numpy as np
+import pandas as pd
 from keras import layers, models, optimizers
 from keras import backend as K
 from keras.utils import to_categorical
-import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from utils import plot_log
 from PIL import Image
@@ -115,7 +115,7 @@ def train(model, train_gen, val_gen, args):
                         validation_data=val_gen,
                         callbacks=[log, tb, checkpoint, lr_decay],
                         use_multiprocessing=True,
-                        workers=6)
+                        workers=1)
 
     model.save_weights(args.save_dir + '/trained_model.h5')
     print('Trained model saved to \'%s/trained_model.h5\'' % args.save_dir)
@@ -126,7 +126,7 @@ def train(model, train_gen, val_gen, args):
     return model
 
 
-def load_generators(train_dir):
+def load_generators(data_dir):
     # Parameters
     params = {'dim': (96,96),
               'batch_size': 100,
@@ -135,22 +135,23 @@ def load_generators(train_dir):
               'shuffle': True}
 
     # Data
-    data = pd.read_csv(train_dir + 'train_labels.csv')
-    train, val = train_test_split(data['id'], 
-                                  test_size = 0.1,
-                                  random_state = 42,
-                                  shuffle=True)
-    labels = {row['id']:row['label'] for index, row in data.iterrows()}
+    data = pd.read_csv(data_dir + 'train_labels.csv')
+    train, val = train_test_split(data, test_size = 0.1, random_state=42)
+    partition = {"train":list(train['id']), "validation":list(val['id'])}
+    labels = dict(zip(data['id'], data['label']))
+
+    train_dir = data_dir + "train/"
 
     # Generators
-    train_gen = DataGenerator(train, labels, train_dir, **params)
-    val_gen = DataGenerator(val, labels, train_dir, **params)
+    train_gen = DataGenerator(partition['train'], labels, train_dir, **params)
+    val_gen = DataGenerator(partition['validation'], labels, train_dir, **params)
 
     return train_gen, val_gen
 
 
 if __name__ == "__main__":
-
+    import os
+    import argparse
     from keras import callbacks
 
     # setting the hyper parameters
@@ -168,7 +169,7 @@ if __name__ == "__main__":
     parser.add_argument('--debug', action='store_true',
                         help="Save weights by TensorBoard")
     parser.add_argument('--save_dir', default='results')
-    parser.add_argument('--train_dir', default='data/train/')
+    parser.add_argument('--data_dir', default='data/')
     parser.add_argument('-w', '--weights', default=None,
                         help="The path of the saved weights. Should be specified when testing")
     args = parser.parse_args()
@@ -177,16 +178,15 @@ if __name__ == "__main__":
     if not os.path.exists(args.save_dir):
         os.makedirs(args.save_dir)
 
-    train_gen, val_gen = load_generators(args.train_dir)
+    train_gen, val_gen = load_generators(args.data_dir)
 
     # define model
     model, eval_model = CapsNet(input_shape=train_gen.shape[1:],
-                                n_class=train_gen.n_class,
+                                n_class=train_gen.n_classes,
                                 routings=args.routings)
     model.summary()
 
     # train or test
     if args.weights is not None:  # init the model weights with provided one
         model.load_weights(args.weights)
-    if not args.testing:
-        train(model=model, train_gen=train_gen, val_gen=val_gen, args=args)
+    train(model=model, train_gen=train_gen, val_gen=val_gen, args=args)
