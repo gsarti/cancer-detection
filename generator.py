@@ -30,7 +30,7 @@ class DataGenerator(Sequence):
     
     def __len__(self):
         'Denotes the number of batches per epoch'
-        return int(np.floor(len(self.list_IDs) / self.batch_size))
+        return int(np.ceil(len(self.list_IDs) / self.batch_size))
 
     def __getitem__(self, index):
         'Generate one batch of data'
@@ -40,7 +40,6 @@ class DataGenerator(Sequence):
         list_IDs_temp = [self.list_IDs[k] for k in indexes]
         # Generate data
         X, y = self.__data_generation(list_IDs_temp)
-        print((X.shape, y.shape))
         return X, y
 
     def on_epoch_end(self):
@@ -64,6 +63,6 @@ class DataGenerator(Sequence):
             y[i] = self.labels[ID]
 
         # Standardize images
-        X = X.astype('float32') / 255
-
-        return X, to_categorical(y, num_classes=self.n_classes)
+        x_batch = X.astype('float32') / 255
+        y_batch = to_categorical(y, num_classes=self.n_classes)
+        return [x_batch, y_batch], [y_batch, x_batch]

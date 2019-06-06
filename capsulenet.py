@@ -115,7 +115,8 @@ def train(model, train_gen, val_gen, args):
                         validation_data=val_gen,
                         callbacks=[log, tb, checkpoint, lr_decay],
                         use_multiprocessing=True,
-                        workers=1)
+                        workers=6,
+                        verbose=1)
 
     model.save_weights(args.save_dir + '/trained_model.h5')
     print('Trained model saved to \'%s/trained_model.h5\'' % args.save_dir)
