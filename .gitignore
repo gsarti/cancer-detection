@@ -192,3 +192,6 @@ dmypy.json
 # Directory with data
 directoryNotToBeUploaded
 histopathologic-cancer-detection
+
+# Data taken from kaggle
+data/results_kaggleJoni/*
