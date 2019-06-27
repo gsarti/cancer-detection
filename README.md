@@ -12,4 +12,16 @@ The data are a slightly modified version of the **PatchCamelyon (PCam)** [benchm
 
 > **PCam** packs the clinically-relevant task of metastasis detection into a straight-forward binary image classification task, akin to CIFAR-10 and MNIST. Models can easily be trained on a single GPU in a couple hours, and achieve competitive scores in the Camelyon16 tasks of tumor detection and whole-slide image diagnosis. Furthermore, the balance between task-difficulty and tractability makes it a prime suspect for fundamental machine learning research on topics as active learning, model uncertainty, and explainability.
 
-The data are provided under the [CC0 License](https://choosealicense.com/licenses/cc0-1.0/).
+The data are provided under the [CC0 License](https://choosealicense.com/licenses/cc0-1.0/). They can be found in the `data` folder.
+
+## Approaches
+
+We compared three approaches for this classification task:
+
+* Unsupervised segmentation of cellules nuclei followed by a random forest on full-image cell statistics.
+
+* DenseNet-169 convolutional neural network with pretrained weights and adaptive learning rate, based on the top Kaggle kernel for the challenge.
+
+* Capsule networks for tumor detection
+
+More information on the project and resources can be found in our [project presentation](https://github.com/gsarti/cancer-detection/blob/master/HCD_Presentation.pdf).
