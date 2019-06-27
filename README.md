@@ -1,10 +1,8 @@
-# Histopathologic Cancer Detection using CNNs
-
 ![header](img/header.png)
 
 ## Description
 
-"Histopathologic Cancer Detection using CNNs" is developed by Team Capybara ([gsarti](https://github.com/gsarti), [stinco](https://github.com/stinco), [andrealorenzon](https://github.com/andrealorenzon)) as final project for the course "Statistical Machine Learning" held by Prof. Luca Bortolussi at University of Trieste.
+"Histopathologic Cancer Detection" is developed by Team Capybara ([gsarti](https://github.com/gsarti), [stinco](https://github.com/stinco), [andrealorenzon](https://github.com/andrealorenzon)) as final project for the Statistical Machine Learning course held by Prof. Luca Bortolussi at University of Trieste.
 
 The project is based on the Kaggle competition ["Histopathologic Cancer Detection"](https://www.kaggle.com/c/histopathologic-cancer-detection), in which participants create an algorithm to identify metastatic cancer in small image patches taken from larger digital pathology scans.
 
