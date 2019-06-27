@@ -195,3 +195,7 @@ histopathologic-cancer-detection
 
 # Data taken from kaggle
 data/results_kaggleJoni/*
+
+data/
+
+.vscode/
